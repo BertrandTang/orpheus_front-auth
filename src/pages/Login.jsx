@@ -44,15 +44,15 @@ const LoginPage = () => {
 
       if (!response.ok) {
         const datas = await response.json();
-        const errorCustom = new Error(datas.error || "An error occured");
+        const errorCustom = new Error(datas.error || "Une erreur est survenue");
         errorCustom.status = response.status;
         throw errorCustom;
       }
-      
+
       console.log("Connexion réussie !");
       navigate("/offres/professionnelles");
     } catch (error) {
-      console.error(`HTTP ERROR: ${error.message} (${error.status})`);
+      console.error(`LOGIN ERROR: ${error.message} (${error.status})`);
       if (error.status === 401) {
         setErrorMessage("Identifiants invalides.");
       } else {
