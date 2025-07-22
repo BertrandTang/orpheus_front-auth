@@ -46,14 +46,17 @@ const LoginPage = () => {
         console.log("Connexion réussie !");
         navigate("/offres/professionnelles");
       } else {
-        const errorData = await response.json();
-        throw new Error(errorData.message || "Email ou mot de passe incorrect");
+        const errorData = response;
+        if (errorData.status === 401) {
+          throw new Error("Email ou mot de passe incorrect");
+        }
+        throw new Error(errorData);
       }
     } catch (error) {
-      console.error("Erreur:", error);
+      console.error("Détails de l'erreur du serveur :", error);
       setErrorMessage(error.message || "Erreur de connexion.");
     }
-    
+
     console.log("Login submitted:", formData);
   };
 
