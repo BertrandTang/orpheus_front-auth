@@ -1,11 +1,23 @@
 import { useState } from "react";
-import { Form, Button, Container, Card, Row, Col } from "react-bootstrap";
+import {
+  Form,
+  Button,
+  Container,
+  Card,
+  Row,
+  Col,
+  Alert,
+} from "react-bootstrap";
+import { useNavigate } from "react-router";
 
 const LoginPage = () => {
   const [formData, setFormData] = useState({
     email: "",
     password: "",
   });
+
+  const navigate = useNavigate();
+  const [errorMessage, setErrorMessage] = useState(null);
 
   const handleChange = (e) => {
     setFormData({
@@ -14,13 +26,35 @@ const LoginPage = () => {
     });
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    // Handle login logic here
-    // Don't forget to handle errors, both for yourself (dev) and for the client (via a Bootstrap Alert):
-    //   - Show an error if credentials are invalid
-    //   - Show a generic error for all other cases
-    // On success, redirect to the Pro Offers page
+
+    try {
+      const response = await fetch(
+        "https://offers-api.digistos.com/api/auth/login",
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            Accept: "application/json",
+          },
+          body: JSON.stringify(formData),
+        }
+      );
+
+      if (response.ok) {
+        console.log("Connexion réussie !");
+        navigate("/offres/professionnelles");
+      } else {
+        const errorData = await response.json();
+        console.error("Email ou mot de passe incorrect", errorData);
+        throw new Error(errorData.message || "Email ou mot de passe incorrect");
+      }
+    } catch (error) {
+      console.error("Erreur de connexion.", error);
+      setErrorMessage(error.message || "Erreur de connexion.");
+    }
+
     console.log("Login submitted:", formData);
   };
 
@@ -28,6 +62,16 @@ const LoginPage = () => {
     <Container className="d-flex justify-content-center align-items-center min-vh-100">
       <Row className="w-100 justify-content-center">
         <Col xs={12} sm={8} md={6} lg={4}>
+          {errorMessage && (
+            <Alert
+              variant="danger"
+              onClose={() => setErrorMessage(null)}
+              dismissible
+              className="mb-3"
+            >
+              {errorMessage}
+            </Alert>
+          )}
           <Card className="p-4 shadow-lg">
             <h1 className="text-center mb-4">Se connecter</h1>
             <Form onSubmit={handleSubmit}>
