@@ -52,7 +52,7 @@ const Register = () => {
       }
     } catch (error) {
       console.error("Erreur:", error);
-      setErrorMessage(error.message || "Erreur de connexion.");
+      setErrorMessage("Erreur d'inscription.");
     }
   }; 
 
