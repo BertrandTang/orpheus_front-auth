@@ -35,7 +35,7 @@ const Register = () => {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
-            "Accept": "application/json",
+            Accept: "application/json",
           },
           body: JSON.stringify(formData),
         }
@@ -53,7 +53,7 @@ const Register = () => {
       }
     } catch (error) {
       console.error("Erreur de connexion.", error);
-      setErrorMessage(error.message || "Erreur de connexion.");
+      setErrorMessage("Erreur de connexion.");
     }
   };
 
