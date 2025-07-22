@@ -42,19 +42,22 @@ const LoginPage = () => {
         }
       );
 
-      if (response.ok) {
-        console.log("Connexion réussie !");
-        navigate("/offres/professionnelles");
-      } else {
-        const errorData = response;
-        if (errorData.status === 401) {
-          throw new Error("Email ou mot de passe incorrect");
-        }
-        throw new Error(errorData);
+      if (!response.ok) {
+        const datas = await response.json();
+        const errorCustom = new Error(datas.error || "An error occured");
+        errorCustom.status = response.status;
+        throw errorCustom;
       }
+      
+      console.log("Connexion réussie !");
+      navigate("/offres/professionnelles");
     } catch (error) {
-      console.error("Détails de l'erreur du serveur :", error);
-      setErrorMessage(error.message || "Erreur de connexion.");
+      console.error(`HTTP ERROR: ${error.message} (${error.status})`);
+      if (error.status === 401) {
+        setErrorMessage("Identifiants invalides.");
+      } else {
+        setErrorMessage("Une erreur est survenue lors de la connexion");
+      }
     }
 
     console.log("Login submitted:", formData);
