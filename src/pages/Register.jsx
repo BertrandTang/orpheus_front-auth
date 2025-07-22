@@ -28,7 +28,6 @@ const Register = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    setErrorMessage(null);
     try {
       const response = await fetch(
         "https://offers-api.digistos.com/api/auth/register",
@@ -36,6 +35,7 @@ const Register = () => {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
+            "Accept": "application/json",
           },
           body: JSON.stringify(formData),
         }
@@ -47,13 +47,13 @@ const Register = () => {
       } else {
         const errorData = await response.json();
         console.error("Erreur lors de l'inscription:", errorData);
-        setErrorMessage(
+        throw new Error(
           errorData.message || "Une erreur est survenue lors de l'inscription."
         );
       }
     } catch (error) {
-      console.error("Erreur de connexion ou inattendue:", error);
-      setErrorMessage("Erreur de connexion ou inattendue.");
+      console.error("Erreur de connexion.", error);
+      setErrorMessage(error.message || "Erreur de connexion.");
     }
   };
 
