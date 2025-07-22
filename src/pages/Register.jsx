@@ -46,16 +46,15 @@ const Register = () => {
         navigate("/connexion");
       } else {
         const errorData = await response.json();
-        console.error("Erreur lors de l'inscription:", errorData);
         throw new Error(
           errorData.message || "Une erreur est survenue lors de l'inscription."
         );
       }
     } catch (error) {
-      console.error("Erreur de connexion.", error);
-      setErrorMessage("Erreur de connexion.");
+      console.error("Erreur:", error);
+      setErrorMessage(error.message || "Erreur de connexion.");
     }
-  };
+  }; 
 
   return (
     <Container className="d-flex justify-content-center align-items-center min-vh-100">
