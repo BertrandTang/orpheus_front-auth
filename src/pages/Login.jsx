@@ -9,6 +9,8 @@ import {
   Alert,
 } from "react-bootstrap";
 import { useNavigate } from "react-router";
+import { loginSuccess } from "../store/authSlice.js";
+import { useDispatch } from "react-redux";
 
 const LoginPage = () => {
   const [formData, setFormData] = useState({
@@ -17,6 +19,7 @@ const LoginPage = () => {
   });
 
   const navigate = useNavigate();
+  const dispatch = useDispatch();
   const [errorMessage, setErrorMessage] = useState(null);
 
   const handleChange = (e) => {
@@ -42,12 +45,23 @@ const LoginPage = () => {
         }
       );
 
+      const data = await response.json();
+
       if (!response.ok) {
         const datas = await response.json();
         const errorCustom = new Error(datas.error || "Une erreur est survenue");
         errorCustom.status = response.status;
         throw errorCustom;
       }
+
+      dispatch(
+        loginSuccess({
+          token: data.access_token,
+          expiresAt: new Date(
+            Date.now() + data.expires_in * 1000
+          ).toISOString(),
+        })
+      );
 
       console.log("Connexion réussie !");
       navigate("/offres/professionnelles");
