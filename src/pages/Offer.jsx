@@ -1,14 +1,12 @@
 import { useEffect, useState } from "react";
 import { useParams } from "react-router";
 import { Container, Card, Spinner, Alert } from "react-bootstrap";
-import { useSelector } from "react-redux";
 
 const Offer = () => {
   const { id } = useParams();
   const [offer, setOffer] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
-  const token = useSelector((state) => state.auth.token);
 
   useEffect(() => {
     const fetchOffer = async () => {
@@ -18,13 +16,13 @@ const Offer = () => {
           {
             headers: {
               Accept: "application/json",
-              Authorization: `Bearer ${token}`,
+              // Add Authorization token
             },
           }
         );
 
         const { data: offers, message } = await response.json();
-
+        
         if (!response.ok) {
           throw { status: response.status, message: message };
         }
@@ -43,7 +41,6 @@ const Offer = () => {
     };
 
     fetchOffer();
-  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [id]);
 
   if (loading)
