@@ -18,7 +18,7 @@ const Logout = () => {
               method: "POST",
               headers: {
                 Accept: "application/json",
-                Authorization: `Bearer ${token}`,
+                credentials: "include",
               },
             }
           );
@@ -45,7 +45,7 @@ const Logout = () => {
     };
 
     handleLogout();
-  // eslint-disable-next-line react-hooks/exhaustive-deps
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   return null; // Pas besoin d'afficher quoi que ce soit

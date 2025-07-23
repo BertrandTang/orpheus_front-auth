@@ -4,18 +4,16 @@ import "../assets/styles/Header.css";
 import { useEffect, useState } from "react";
 
 function Header() {
-  const location = useLocation(); // Donne accès à l'URL courante ; change à chaque navigation
-  const getValidToken = () => {
-    const auth = JSON.parse(localStorage.getItem("auth"));
-    const isValid = auth && new Date(auth.expiresAt) > new Date();
-    return isValid;
-  };
+  const location = useLocation();
   const [isConnected, setIsConnected] = useState(false);
-
   useEffect(() => {
-    setIsConnected(getValidToken());
+    const authData = JSON.parse(localStorage.getItem("auth"));
+    if (authData && new Date(authData.expiresAt) > new Date()) {
+      setIsConnected(true);
+    } else {
+      setIsConnected(false);
+    }
   }, [location]);
-
   return (
     <Navbar bg="light" data-bs-theme="light">
       <Container>
