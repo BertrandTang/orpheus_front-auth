@@ -3,52 +3,40 @@ import { useNavigate } from "react-router";
 
 const Logout = () => {
   const navigate = useNavigate();
+  const auth = JSON.parse(localStorage.getItem("auth"));
 
   useEffect(() => {
     const handleLogout = async () => {
       try {
-        const auth = JSON.parse(localStorage.getItem("auth"));
-        const token = auth?.token;
-
-        if (token) {
-          // (1) Appel API pour notifier la déconnexion
+        if (auth && new Date(auth.expiresAt) > new Date()) {
           const response = await fetch(
             "https://offers-api.digistos.com/api/auth/logout",
             {
               method: "POST",
               headers: {
                 Accept: "application/json",
-                credentials: "include",
               },
+              credentials: "include",
             }
           );
 
           if (!response.ok) {
             const data = await response.json();
-            throw new Error(
-              `HTTP Error : ${data.message} status : ${data.status}`
-            );
+            throw new Error(data.message);
           }
-        } else {
-          throw new Error("Missing Token");
         }
       } catch (error) {
-        console.error(
-          `Error: ${error.message} ${error.status ? ` (${error.status})` : ""}`
-        );
+        console.error(error);
       } finally {
-        // (2) Suppression du token côté frontend
         localStorage.removeItem("auth");
-        // (3) Redirection vers la page de login
         navigate("/connexion");
       }
     };
 
     handleLogout();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  }, [navigate, auth]);
 
-  return null; // Pas besoin d'afficher quoi que ce soit
+  return null;
 };
 
 export default Logout;

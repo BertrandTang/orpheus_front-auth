@@ -6,13 +6,17 @@ import { useEffect, useState } from "react";
 function Header() {
   const location = useLocation();
   const [isConnected, setIsConnected] = useState(false);
+
   useEffect(() => {
-    const authData = JSON.parse(localStorage.getItem("auth"));
-    if (authData && new Date(authData.expiresAt) > new Date()) {
-      setIsConnected(true);
-    } else {
-      setIsConnected(false);
-    }
+
+  const verifyToken = () => {
+      const raw = localStorage.getItem("auth");
+      const token = JSON.parse(raw);
+      if (token && new Date(token.expiresAt) > new Date()) setIsConnected(true);
+      else setIsConnected(false);
+    };
+    verifyToken();
+    
   }, [location]);
   return (
     <Navbar bg="light" data-bs-theme="light">

@@ -54,7 +54,6 @@ const LoginPage = () => {
           expiresAt: new Date(
             Date.now() + data.expires_in * 1000
           ).toISOString(),
-          credentials: 'include',
         })
       );
 
